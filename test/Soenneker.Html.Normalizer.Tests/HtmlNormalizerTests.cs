@@ -25,13 +25,13 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
               <!-- render marker -->
               <style>.first { color: red; }</style>
               <script>window.runtimeId = 'first';</script>
-              <h1 class="title" id="hero">Leadping</h1>
+              <h1 class="title" id="hero">Example Site</h1>
             </main>
             """;
         const string second = """
             <main _bl_456="" nonce="second"><style>.second { color: blue; }</style>
               <script>window.runtimeId = 'second';</script><!-- another marker -->
-              <h1 id="hero" class="title">Leadping</h1></main>
+              <h1 id="hero" class="title">Example Site</h1></main>
             """;
 
         string normalizedFirst = await _normalizer.Normalize(first);
@@ -110,8 +110,8 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     [Test]
     public async Task Normalize_and_hash_returns_a_repeatable_xxhash3_hash()
     {
-        HtmlNormalizationResult first = await _normalizer.NormalizeAndHash("<main id='content' class='page'>Leadping</main>");
-        HtmlNormalizationResult second = await _normalizer.NormalizeAndHash("<main class=\"page\" id=\"content\">Leadping</main>");
+        HtmlNormalizationResult first = await _normalizer.NormalizeAndHash("<main id='content' class='page'>Example Site</main>");
+        HtmlNormalizationResult second = await _normalizer.NormalizeAndHash("<main class=\"page\" id=\"content\">Example Site</main>");
 
         await Assert.That(first.Html).IsEqualTo(second.Html);
         await Assert.That(first.Hash).IsEqualTo(second.Hash);
