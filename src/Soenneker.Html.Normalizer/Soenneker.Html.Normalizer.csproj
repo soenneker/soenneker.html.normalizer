@@ -43,7 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Soenneker.AngleSharp.Parser" Version="4.0.54" />
+        <PackageReference Include="Soenneker.AngleSharp.Parser" Version="4.0.59" />
         <PackageReference Include="Soenneker.Hashing.XxHash" Version="4.0.80" />
     </ItemGroup>
 </Project>
