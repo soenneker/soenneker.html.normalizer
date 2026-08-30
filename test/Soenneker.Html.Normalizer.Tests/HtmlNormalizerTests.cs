@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using System;
 using System.Threading.Tasks;
 using Soenneker.Html.Normalizer.Abstract;
 using Soenneker.Html.Normalizer.Models;
@@ -71,6 +72,14 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
 
         await Assert.That(await _normalizer.Normalize(first, options))
                     .IsEqualTo(await _normalizer.Normalize(second, options));
+    }
+
+    [Test]
+    public async Task String_replacements_have_a_bounded_match_timeout()
+    {
+        var replacement = new HtmlNormalizationReplacement("generated-[0-9]+", "generated-id");
+
+        await Assert.That(replacement.Pattern.MatchTimeout).IsEqualTo(TimeSpan.FromSeconds(1));
     }
 
     [Test]

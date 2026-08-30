@@ -21,7 +21,6 @@ using Soenneker.Html.Normalizer.Options;
 
 namespace Soenneker.Html.Normalizer;
 
-/// <inheritdoc cref="IHtmlNormalizer"/>
 public sealed class HtmlNormalizer : IHtmlNormalizer
 {
     private static readonly HashSet<string> WhitespaceSensitiveElements = new(StringComparer.OrdinalIgnoreCase)

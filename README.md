@@ -1,15 +1,18 @@
 [![](https://img.shields.io/nuget/v/soenneker.html.normalizer.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.html.normalizer/)
+[![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.html.normalizer/build-and-test.yml?style=for-the-badge)](https://github.com/soenneker/soenneker.html.normalizer/actions/workflows/build-and-test.yml)
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.html.normalizer/publish-package.yml?style=for-the-badge)](https://github.com/soenneker/soenneker.html.normalizer/actions/workflows/publish-package.yml)
 [![](https://img.shields.io/nuget/dt/soenneker.html.normalizer.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.html.normalizer/)
+[![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.html.normalizer/codeql.yml?label=CodeQL&style=for-the-badge)](https://github.com/soenneker/soenneker.html.normalizer/actions/workflows/codeql.yml)
 
-# ![](https://user-images.githubusercontent.com/4441470/224455560-91ed3ee7-f510-4041-a8d2-3fc093025112.png) Soenneker.Html.Normalizer
-### Deterministic, configurable HTML normalization for hashing and change detection
+# Soenneker.Html.Normalizer
+
+Deterministic, configurable HTML normalization for hashing and change detection.
 
 ## Installation
 
 ```
 dotnet add package Soenneker.Html.Normalizer
-```
+```bash
 
 ## Usage
 
@@ -64,3 +67,7 @@ services.AddHtmlNormalizerAsSingleton();
 ```
 
 Browser readiness is intentionally outside this package. Wait for hydration or another application-specific readiness signal before capturing and normalizing rendered HTML.
+
+Normalized output is for comparison, not for rendering back to users: the default profile removes IDs and ID-reference attributes that can be functionally or accessibility significant. Disable the corresponding options when those values are part of the change you need to detect.
+
+String-based replacements use a one-second regex match timeout. When supplying an existing `Regex`, construct it with an appropriate timeout yourself. XXH3 is a fast non-cryptographic hash; do not use it for signatures, password storage, or authenticity checks.

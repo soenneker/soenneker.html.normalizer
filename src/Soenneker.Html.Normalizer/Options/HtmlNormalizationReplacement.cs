@@ -8,6 +8,8 @@ namespace Soenneker.Html.Normalizer.Options;
 /// </summary>
 public sealed class HtmlNormalizationReplacement
 {
+    private static readonly TimeSpan _defaultMatchTimeout = TimeSpan.FromSeconds(1);
+
     /// <summary>
     /// Gets the regular expression matched against serialized HTML.
     /// </summary>
@@ -30,7 +32,7 @@ public sealed class HtmlNormalizationReplacement
     }
 
     /// <summary>
-    /// Initializes a replacement and compiles its regular expression.
+    /// Initializes a replacement and compiles its regular expression with a one-second match timeout.
     /// </summary>
     /// <param name="pattern">The regular-expression pattern matched against serialized HTML.</param>
     /// <param name="replacement">The replacement string. Regular-expression substitution syntax is supported.</param>
@@ -40,7 +42,7 @@ public sealed class HtmlNormalizationReplacement
     /// </param>
     public HtmlNormalizationReplacement(string pattern, string replacement,
         RegexOptions regexOptions = RegexOptions.CultureInvariant) : this(
-        new Regex(pattern, regexOptions | RegexOptions.Compiled), replacement)
+        new Regex(pattern, regexOptions | RegexOptions.Compiled, _defaultMatchTimeout), replacement)
     {
     }
 }
