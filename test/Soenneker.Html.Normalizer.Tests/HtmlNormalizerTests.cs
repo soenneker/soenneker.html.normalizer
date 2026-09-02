@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using System.Threading;
 using System;
 using System.Threading.Tasks;
 using Soenneker.Html.Normalizer.Abstract;
@@ -19,7 +20,7 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Runtime_artifacts_produce_the_same_normalized_html()
+    public async Task Runtime_artifacts_produce_the_same_normalized_html(CancellationToken cancellationToken)
     {
         const string first = """
             <main nonce="first" _bl_123="">
@@ -35,14 +36,14 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
               <h1 id="hero" class="title">Example Site</h1></main>
             """;
 
-        string normalizedFirst = await _normalizer.Normalize(first);
-        string normalizedSecond = await _normalizer.Normalize(second);
+        string normalizedFirst = await _normalizer.Normalize(first, cancellationToken: cancellationToken);
+        string normalizedSecond = await _normalizer.Normalize(second, cancellationToken: cancellationToken);
 
         await Assert.That(normalizedFirst).IsEqualTo(normalizedSecond);
     }
 
     [Test]
-    public async Task JsonLd_and_indexable_content_are_preserved()
+    public async Task JsonLd_and_indexable_content_are_preserved(CancellationToken cancellationToken)
     {
         const string original = """
             <html><head><script type="application/ld+json">{"name":"Original"}</script></head>
@@ -53,15 +54,15 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
             <body><a href="/contact">Changed content</a></body></html>
             """;
 
-        string normalizedOriginal = await _normalizer.Normalize(original);
-        string normalizedChanged = await _normalizer.Normalize(changed);
+        string normalizedOriginal = await _normalizer.Normalize(original, cancellationToken: cancellationToken);
+        string normalizedChanged = await _normalizer.Normalize(changed, cancellationToken: cancellationToken);
 
         await Assert.That(normalizedOriginal).Contains("application/ld+json");
         await Assert.That(normalizedOriginal).IsNotEqualTo(normalizedChanged);
     }
 
     [Test]
-    public async Task Custom_replacements_normalize_application_generated_values()
+    public async Task Custom_replacements_normalize_application_generated_values(CancellationToken cancellationToken)
     {
         var options = new HtmlNormalizationOptions();
         options.Replacements.Add(new HtmlNormalizationReplacement(
@@ -70,8 +71,8 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
         const string first = "<div data-session=\"session-342082340f974064841b23af31f8abf4\">Content</div>";
         const string second = "<div data-session=\"session-972d5276a61546eea574e1373ef559d6\">Content</div>";
 
-        await Assert.That(await _normalizer.Normalize(first, options))
-                    .IsEqualTo(await _normalizer.Normalize(second, options));
+        await Assert.That(await _normalizer.Normalize(first, options, cancellationToken: cancellationToken))
+                    .IsEqualTo(await _normalizer.Normalize(second, options, cancellationToken: cancellationToken));
     }
 
     [Test]
@@ -83,7 +84,7 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Randomized_ids_and_their_references_are_removed_by_default()
+    public async Task Randomized_ids_and_their_references_are_removed_by_default(CancellationToken cancellationToken)
     {
         const string first = """
             <section id="panel-342082340f974064841b23af31f8abf4" aria-labelledby="title-342082340f974064841b23af31f8abf4">
@@ -100,27 +101,27 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
             </section>
             """;
 
-        await Assert.That(await _normalizer.Normalize(first)).IsEqualTo(await _normalizer.Normalize(second));
+        await Assert.That(await _normalizer.Normalize(first, cancellationToken: cancellationToken)).IsEqualTo(await _normalizer.Normalize(second, cancellationToken: cancellationToken));
     }
 
     [Test]
-    public async Task Selectors_and_attributes_can_be_removed()
+    public async Task Selectors_and_attributes_can_be_removed(CancellationToken cancellationToken)
     {
         var options = new HtmlNormalizationOptions();
         options.RemoveSelectors.Add("[data-runtime]");
         options.RemoveAttributes.Add("data-request-id");
 
         const string html = "<main data-request-id=\"abc\"><span data-runtime>noise</span><p>Content</p></main>";
-        string normalized = await _normalizer.Normalize(html, options);
+        string normalized = await _normalizer.Normalize(html, options, cancellationToken: cancellationToken);
 
         await Assert.That(normalized).IsEqualTo("<main><p>Content</p></main>");
     }
 
     [Test]
-    public async Task Normalize_and_hash_returns_a_repeatable_xxhash3_hash()
+    public async Task Normalize_and_hash_returns_a_repeatable_xxhash3_hash(CancellationToken cancellationToken)
     {
-        HtmlNormalizationResult first = await _normalizer.NormalizeAndHash("<main id='content' class='page'>Example Site</main>");
-        HtmlNormalizationResult second = await _normalizer.NormalizeAndHash("<main class=\"page\" id=\"content\">Example Site</main>");
+        HtmlNormalizationResult first = await _normalizer.NormalizeAndHash("<main id='content' class='page'>Example Site</main>", cancellationToken: cancellationToken);
+        HtmlNormalizationResult second = await _normalizer.NormalizeAndHash("<main class=\"page\" id=\"content\">Example Site</main>", cancellationToken: cancellationToken);
 
         await Assert.That(first.Html).IsEqualTo(second.Html);
         await Assert.That(first.Hash).IsEqualTo(second.Hash);
