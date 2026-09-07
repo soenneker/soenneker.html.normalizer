@@ -149,8 +149,10 @@ public sealed class HtmlNormalizer : IHtmlNormalizer
             NormalizeAttributes(element, options);
         }
 
-        foreach (INode child in node.ChildNodes.ToArray())
+        INode? nextSibling;
+        for (INode? child = node.FirstChild; child is not null; child = nextSibling)
         {
+            nextSibling = child.NextSibling;
             if (options.RemoveComments && child.NodeType == NodeType.Comment)
             {
                 node.RemoveChild(child);
