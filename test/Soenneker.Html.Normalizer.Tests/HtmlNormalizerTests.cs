@@ -20,7 +20,7 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Runtime_artifacts_produce_the_same_normalized_html(CancellationToken cancellationToken)
+    public async ValueTask Runtime_artifacts_produce_the_same_normalized_html(CancellationToken cancellationToken)
     {
         const string first = """
             <main nonce="first" _bl_123="">
@@ -43,7 +43,7 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task JsonLd_and_indexable_content_are_preserved(CancellationToken cancellationToken)
+    public async ValueTask JsonLd_and_indexable_content_are_preserved(CancellationToken cancellationToken)
     {
         const string original = """
             <html><head><script type="application/ld+json">{"name":"Original"}</script></head>
@@ -62,7 +62,7 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Custom_replacements_normalize_application_generated_values(CancellationToken cancellationToken)
+    public async ValueTask Custom_replacements_normalize_application_generated_values(CancellationToken cancellationToken)
     {
         var options = new HtmlNormalizationOptions();
         options.Replacements.Add(new HtmlNormalizationReplacement(
@@ -76,7 +76,7 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task String_replacements_have_a_bounded_match_timeout()
+    public async ValueTask String_replacements_have_a_bounded_match_timeout()
     {
         var replacement = new HtmlNormalizationReplacement("generated-[0-9]+", "generated-id");
 
@@ -84,7 +84,7 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Randomized_ids_and_their_references_are_removed_by_default(CancellationToken cancellationToken)
+    public async ValueTask Randomized_ids_and_their_references_are_removed_by_default(CancellationToken cancellationToken)
     {
         const string first = """
             <section id="panel-342082340f974064841b23af31f8abf4" aria-labelledby="title-342082340f974064841b23af31f8abf4">
@@ -105,7 +105,7 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Selectors_and_attributes_can_be_removed(CancellationToken cancellationToken)
+    public async ValueTask Selectors_and_attributes_can_be_removed(CancellationToken cancellationToken)
     {
         var options = new HtmlNormalizationOptions();
         options.RemoveSelectors.Add("[data-runtime]");
@@ -118,7 +118,7 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     }
 
     [Test]
-    public async Task Normalize_and_hash_returns_a_repeatable_xxhash3_hash(CancellationToken cancellationToken)
+    public async ValueTask Normalize_and_hash_returns_a_repeatable_xxhash3_hash(CancellationToken cancellationToken)
     {
         HtmlNormalizationResult first = await _normalizer.NormalizeAndHash("<main id='content' class='page'>Example Site</main>", cancellationToken: cancellationToken);
         HtmlNormalizationResult second = await _normalizer.NormalizeAndHash("<main class=\"page\" id=\"content\">Example Site</main>", cancellationToken: cancellationToken);
