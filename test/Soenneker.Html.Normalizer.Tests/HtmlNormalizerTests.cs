@@ -76,7 +76,7 @@ public sealed class HtmlNormalizerTests : HostedUnitTest
     }
 
     [Test]
-    public async ValueTask String_replacements_have_a_bounded_match_timeout()
+    public async ValueTask String_replacements_have_a_bounded_match_timeout(CancellationToken cancellationToken)
     {
         var replacement = new HtmlNormalizationReplacement("generated-[0-9]+", "generated-id");
 
