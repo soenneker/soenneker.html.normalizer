@@ -46,6 +46,6 @@
 
     <ItemGroup>
         <PackageReference Include="Soenneker.AngleSharp.Parser" Version="4.0.108" />
-        <PackageReference Include="Soenneker.Hashing.XxHash" Version="4.0.109" />
+        <PackageReference Include="Soenneker.Hashing.XxHash" Version="4.0.115" />
     </ItemGroup>
 </Project>
